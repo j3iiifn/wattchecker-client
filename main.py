@@ -19,36 +19,41 @@ def get_logger():
     from logging import basicConfig, getLogger, DEBUG
     return getLogger(__name__)
 
-configure_logging()
-logger = get_logger()
+def main():
+    configure_logging()
+    logger = get_logger()
 
-data_manager = DataManager(buff_size=180, output=['csv'])
+    data_manager = DataManager(buff_size=180, output=['csv'])
 
-serverMACAddress = 'WATTCHECKER_MAC_ADDRESS'
-port = 6
-s = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
-s.connect((serverMACAddress, port))
+    serverMACAddress = 'WATTCHECKER_MAC_ADDRESS'
+    port = 6
+    s = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
+    s.connect((serverMACAddress, port))
 
-try:
-    logger.info('Initializing...')
-    wattchecker.initialize(s)
-    
-    logger.info('Starting measurement...')
-    wattchecker.start_measure(s)
-    
-    while True:
-        data = wattchecker.get_data(s)
-        if data:
-            data_manager.store(data)
-        now = time.time()
-        time.sleep(math.ceil(now) - now)
+    try:
+        logger.info('Initializing...')
+        wattchecker.initialize(s)
+        
+        logger.info('Starting measurement...')
+        wattchecker.start_measure(s)
+        
+        while True:
+            data = wattchecker.get_data(s)
+            if data:
+                data_manager.store(data)
+            now = time.time()
+            time.sleep(math.ceil(now) - now)
 
-finally:
-    logger.info('Stopping measurement...')
-    wattchecker.stop_measure(s)
+    finally:
+        logger.info('Stopping measurement...')
+        wattchecker.stop_measure(s)
 
-    logger.info('Closing socket...')
-    s.close()
+        logger.info('Closing socket...')
+        s.close()
 
-    logger.info('Saving buffered data...')
-    data_manager.dump()
+        logger.info('Saving buffered data...')
+        data_manager.dump()
+
+
+if __name__ == "__main__":
+    main()
