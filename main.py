@@ -9,20 +9,13 @@ import bluetooth
 
 import wattchecker
 from data_manager import DataManager
+import logging_util
 
-def configure_logging():
-    from logging.config import dictConfig
-    import yaml
-    with open('logging_config.yaml', 'r') as f:
-        config = yaml.safe_load(f.read())
-        dictConfig(config)
+BUFF_SIZE = 180  # seconds
+OUTPUT_FORMAT = ['csv']
 
-def get_logger():
-    from logging import basicConfig, getLogger, DEBUG
-    return getLogger(__name__)
-
-configure_logging()
-logger = get_logger()
+logging_util.configure_logging('logging_config_main.yaml')
+logger = logging_util.get_logger(__name__)
 
 def _get_macaddr():
     """Discover WATT CHECKER and get MAC address of it
@@ -62,7 +55,7 @@ def search_wattchecker():
     return macaddr, port
 
 def main():
-    data_manager = DataManager(buff_size=180, output=['csv'])
+    data_manager = DataManager(buff_size=BUFF_SIZE, OUTPUT_FORMAT)
 
     mac_address, port = search_wattchecker()
     s = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)

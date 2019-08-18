@@ -3,7 +3,9 @@
 
 import json
 import csv
-from logging import getLogger
+
+import logging_util
+import data_handler
 
 class DataManager:
     def __init__(self, buff_size, output=['csv']):
@@ -13,10 +15,16 @@ class DataManager:
         self.buffer = []
 
         if 'csv' in self.output:
-            self.logger_csv = getLogger('data_manager_csv')
+            logging_util.configure_logging('logging_config_csv.yaml')
+            self.logger_csv = logging_util.get_logger('data_manager_csv')
+            self.logger_csv.handlers[0].rotator = data_handler.data_logger_rotator
+            self.logger_csv.handlers[0].namer = data_handler.data_logger_namer
         
         if 'json' in self.output:
-            self.logger_json = getLogger('data_manager_json')
+            logging_util.configure_logging('logging_config_json.yaml')
+            self.logger_json = logging_util.get_logger('data_manager_json')
+            self.logger_json.handlers[0].rotator = data_handler.data_logger_rotator
+            self.logger_json.handlers[0].namer = data_handler.data_logger_namer
 
     def store(self, data):
         """Store data to buffer.

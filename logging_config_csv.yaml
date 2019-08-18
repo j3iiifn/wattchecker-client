@@ -1,0 +1,19 @@
+version: 1
+formatters:
+  data:
+    format: '%(message)s'
+handlers:
+  data_csv:
+    class: logging.handlers.TimedRotatingFileHandler
+    level: INFO
+    formatter: data
+    filename: log/wattchecker-data.csv
+    when: H
+    backupCount: 0
+    encoding: utf-8
+loggers:
+  data_manager_csv:
+    level: INFO
+    handlers: [data_csv]
+    propagate: no
+disable_existing_loggers: False

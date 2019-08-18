@@ -4,8 +4,8 @@
 import struct
 import time
 
-from logging import getLogger
-logger = getLogger(__name__)
+import logging_util
+logger = logging_util.get_logger(__name__)
 
 from datetime import datetime, timedelta, timezone
 

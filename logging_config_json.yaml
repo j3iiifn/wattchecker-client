@@ -1,0 +1,19 @@
+version: 1
+formatters:
+  data:
+    format: '%(message)s'
+handlers:
+  data_json:
+    class: logging.handlers.TimedRotatingFileHandler
+    level: INFO
+    formatter: data
+    filename: log/wattchecker-data.json
+    when: H
+    backupCount: 0
+    encoding: utf-8
+loggers:
+  data_manager_json:
+    level: INFO
+    handlers: [data_json]
+    propagate: no
+disable_existing_loggers: False
