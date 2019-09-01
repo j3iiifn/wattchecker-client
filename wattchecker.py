@@ -78,9 +78,12 @@ def get_data(socket):
     try:
         response = _request(socket, payload)
         return _unpack_data(response)
-    except Exception as e:
+    except UnpackException as e:
         logger.warning(e)
         return None
+
+class UnpackException(Exception):
+    pass
 
 def _unpack_data(buffer):
     """Unpack received data
@@ -143,10 +146,10 @@ def _request(socket, payload):
 
     header = response[0]
     if header != PACKET_HEADER:
-        raise Exception('Error: Received invalid packet header from WATT CHECKER. %s' % response.hex())
+        raise UnpackException('Error: Received invalid packet header from WATT CHECKER. %s' % response.hex())
 
     error_code = response[4]
     if error_code != 0x00:
-        raise Exception('Error: Received error code from WATT CHECKER. %s' % response.hex())
+        raise UnpackException('Error: Received error code from WATT CHECKER. %s' % response.hex())
     
     return response

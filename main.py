@@ -29,7 +29,7 @@ def _get_macaddr():
         if name == 'WATT CHECKER':
             return addr
 
-    raise Exception('Error: Cannot find MAC address of WATT CHECKER')
+    raise Exception('Error: Failed to find MAC address of WATT CHECKER')
 
 def _get_port(mac_address):
     """Get port number of RFCOMM protocol
@@ -47,19 +47,30 @@ def _get_port(mac_address):
         if s['protocol'] == 'RFCOMM':
             return s['port']
 
-    raise Exception('Error: Cannot find RFCOMM protocol.')
+    raise Exception('Error: Failed to find RFCOMM protocol.')
 
 def search_wattchecker():
     macaddr = _get_macaddr()
     port = _get_port(macaddr)
     return macaddr, port
 
+def connect_wattchecker(mac_address, port):
+    while True:
+        try:
+            logger.info('Connecting to %s %s ...' % (mac_address, port))
+            s = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
+            s.connect((mac_address, port))
+        except OSError as e:
+            logger.error('Failed to connect to %s %s: %s' % (mac_address, port, e))
+            time.sleep(60)
+        else:
+            return s
+
 def main():
     data_manager = DataManager(buff_size=BUFF_SIZE, OUTPUT_FORMAT)
 
     mac_address, port = search_wattchecker()
-    s = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
-    s.connect((mac_address, port))
+    s = connect_wattchecker(mac_address, port)
 
     try:
         logger.info('Initializing...')
@@ -69,18 +80,32 @@ def main():
         wattchecker.start_measure(s)
         
         while True:
+            try:
             data = wattchecker.get_data(s)
             if data:
                 data_manager.store(data)
             now = time.time()
             time.sleep(math.ceil(now) - now)
+            except OSError as e:
+                logger.error('Failed to get data: %s' % e)
+
+                s = connect_wattchecker(mac_address, port)
+
+                logger.info('Initializing...')
+                wattchecker.initialize(s)
+                
+                logger.info('Starting measurement...')
+                wattchecker.start_measure(s)
 
     finally:
+        try:
         logger.info('Stopping measurement...')
         wattchecker.stop_measure(s)
 
         logger.info('Closing socket...')
         s.close()
+        except Exception as e:
+            logger.error('Failed to close connection: %s' % e)
 
         logger.info('Saving buffered data...')
         data_manager.dump()
