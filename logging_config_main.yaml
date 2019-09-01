@@ -13,7 +13,7 @@ handlers:
     level: INFO
     formatter: default
     filename: log/wattchecker-client.log
-    maxBytes: 10000
+    maxBytes: 10000000
     backupCount: 10
     encoding: utf-8
 loggers:
