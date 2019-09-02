@@ -1,0 +1,22 @@
+cachetools==3.1.1
+certifi==2019.6.16
+chardet==3.0.4
+crcmod==1.7
+google-api-core==1.14.2
+google-auth==1.6.3
+google-cloud-bigquery==1.18.0
+google-cloud-core==1.0.3
+google-resumable-media==0.3.3
+googleapis-common-protos==1.6.0
+idna==2.8
+pkg-resources==0.0.0
+protobuf==3.9.1
+pyasn1==0.4.7
+pyasn1-modules==0.2.6
+-e git+https://github.com/pybluez/pybluez@adbbbdd7058b6adaae06eec7e95f3f82cf2ae09f#egg=PyBluez
+pytz==2019.2
+PyYAML==5.1.2
+requests==2.22.0
+rsa==4.0
+six==1.12.0
+urllib3==1.25.3
