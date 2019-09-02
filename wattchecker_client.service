@@ -1,0 +1,18 @@
+[Unit]
+Description=A python client for WATT CHECKER (REX-BTWATTCH1).
+Documentation=https://github.com/j3iiifn/wattchecker-client
+After=bluetooth.target
+
+[Service]
+Restart=always
+User=wattchecker
+WorkingDirectory=/opt/wattchecker-client
+ExecStart=/opt/wattchecker-client/venv/bin/python main.py
+#ExecStop=/bin/kill -SIGINT $MAINPID
+StandardOutput=null
+StandardError=journal
+TimeoutStopSec=20s
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target
