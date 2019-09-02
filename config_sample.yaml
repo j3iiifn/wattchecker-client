@@ -2,3 +2,8 @@ general:
   data_buffer_size: 180
   data_format: 
     - 'csv'
+
+bigquery:
+  service_account_json: 'path/to/json'
+  dataset_id: 'dataset_wattchecker'
+  table_id: 'table_wattchecker'

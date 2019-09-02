@@ -106,3 +106,8 @@ venv.bak/
 # log files
 log/
 
+# secret files
+secret/
+
+# config file
+config.yaml
