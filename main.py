@@ -57,6 +57,7 @@ def connect_wattchecker(mac_address, port):
             logger.info('Connecting to %s %s ...' % (mac_address, port))
             s = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
             s.connect((mac_address, port))
+            s.settimeout(3)
         except OSError as e:
             logger.error('Failed to connect to %s %s: %s' % (mac_address, port, e))
             time.sleep(60)
