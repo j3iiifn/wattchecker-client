@@ -11,9 +11,6 @@ import wattchecker
 from data_manager import DataManager
 import logging_util
 
-BUFF_SIZE = 180  # seconds
-OUTPUT_FORMAT = ['csv']
-
 logging_util.configure_logging('logging_config_main.yaml')
 logger = logging_util.get_logger(__name__)
 
@@ -66,8 +63,32 @@ def connect_wattchecker(mac_address, port):
         else:
             return s
 
+def load_config(config_path):
+    import yaml
+    with open(config_path, 'r') as f:
+        config = yaml.safe_load(f.read())
+    
+    # set defaults
+    config.setdefault('general', {})
+    config['general'].setdefault('data_buffer_size', 180)  # seconds
+    config['general'].setdefault('data_format', ['csv'])  # ['csv', 'json']
+
+    return config
+
+def aparse():
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--config', default='config.yaml', type=str,
+        help='Path to configuration file.'
+    )
+    return parser.parse_args()
+
 def main():
-    data_manager = DataManager(buff_size=BUFF_SIZE, OUTPUT_FORMAT)
+    args = aparse()
+    config = load_config(args.config)
+
+    data_manager = DataManager(config)
 
     mac_address, port = search_wattchecker()
     s = connect_wattchecker(mac_address, port)

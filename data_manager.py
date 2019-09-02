@@ -8,9 +8,9 @@ import logging_util
 import data_handler
 
 class DataManager:
-    def __init__(self, buff_size, output=['csv']):
-        self.buff_size = buff_size
-        self.output = output
+    def __init__(self, config):
+        self.buff_size = config['general']['data_buffer_size']
+        self.output = config['general']['data_format']
         self.counter = 0
         self.buffer = []
 
