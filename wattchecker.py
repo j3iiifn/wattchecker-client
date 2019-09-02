@@ -128,6 +128,8 @@ def _unpack_data(buffer):
     ret['mA'] = d['current'] / 128.0
     ret['W'] = d['power'] * 5.0 / 1000.0
 
+    logger.debug('{},{:.2f},{:.2f},{:.2f}'.format(ret['datetime'], ret['V'], ret['mA'], ret['W']))
+
     return ret
 
 def _request(socket, payload):
