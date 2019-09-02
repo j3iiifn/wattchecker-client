@@ -103,11 +103,11 @@ def main():
         
         while True:
             try:
-            data = wattchecker.get_data(s)
-            if data:
-                data_manager.store(data)
-            now = time.time()
-            time.sleep(math.ceil(now) - now)
+                data = wattchecker.get_data(s)
+                if data:
+                    data_manager.store(data)
+                now = time.time()
+                time.sleep(math.ceil(now) - now)
             except OSError as e:
                 logger.error('Failed to get data: %s' % e)
 
@@ -118,14 +118,17 @@ def main():
                 
                 logger.info('Starting measurement...')
                 wattchecker.start_measure(s)
+    
+    except Exception as e:
+        logger.error(e)
 
     finally:
         try:
-        logger.info('Stopping measurement...')
-        wattchecker.stop_measure(s)
+            logger.info('Stopping measurement...')
+            wattchecker.stop_measure(s)
 
-        logger.info('Closing socket...')
-        s.close()
+            logger.info('Closing socket...')
+            s.close()
         except Exception as e:
             logger.error('Failed to close connection: %s' % e)
 
